@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Career Predictor</title>
+
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease-in-out;
+}
+.glass:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0,255,0,0.2);
+}
+.slider::-webkit-slider-thumb {
+    appearance:none;
+    width:22px;
+    height:22px;
+    background:#22c55e;
+    border-radius:50%;
+    cursor:pointer;
+    border: 2px solid white;
+}
+.slider::-moz-range-thumb {
+    width:22px;
+    height:22px;
+    background:#22c55e;
+    border-radius:50%;
+    cursor:pointer;
+    border: 2px solid white;
+}
+</style>
+</head>
+
+<body class="text-white min-h-screen flex items-center justify-center p-6">
+
+<div class="max-w-5xl w-full">
+
+<h1 class="text-4xl md:text-5xl font-bold text-center mb-2">🎯 AI Career Predictor</h1>
+<p class="text-center text-gray-400 mb-8">
+Give yourself points (0–5) for each trait to see your best career match
+</p>
+
+<div class="glass rounded-3xl p-8 shadow-2xl">
+
+<div id="sliders" class="grid md:grid-cols-2 gap-6"></div>
+
+<div class="text-center mt-8">
+<button onclick="predictCareer()"
+class="bg-green-500 hover:bg-green-400 transition px-8 py-3 rounded-xl text-lg font-semibold shadow-lg">
+Predict My Career 🚀
+</button>
+</div>
+
+</div>
+
+<div id="results" class="mt-10 hidden">
+<h2 class="text-2xl font-semibold text-center mb-6">🏆 Your Top Career Matches</h2>
+<div id="cards" class="grid md:grid-cols-3 gap-6"></div>
+</div>
+
+</div>
+
+<script>
+const API = "https://career-role-predictor-ai.onrender.com/predict";
+
+const traits = [
+"logic","math","creativity","coding","communication",
+"patience","curiosity","attention","risk_taking","visualization"
+];
+
+const slidersDiv = document.getElementById("sliders");
+
+
+
+
+traits.forEach(t => {
+    slidersDiv.innerHTML += `
+    <div>
+        <div class="flex justify-between mb-1">
+            <label class="capitalize font-medium">${t.replace("_"," ")}</label>
+            <span id="${t}_val">2</span>
+        </div>
+        <input type="range" min="0" max="5" value="2"
+            class="w-full slider"
+            oninput="updateVal('${t}', this.value)"
+            id="${t}">
+    </div>`;
+});
+
+
+
+
+
+function updateVal(id,val){
+    document.getElementById(id+"_val").innerText = val;
+}
+
+
+async function predictCareer(){
+    let data = {};
+    traits.forEach(t=>{
+        data[t] = Number(document.getElementById(t).value);
+    });
+
+    const res = await fetch(API,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    showResults(result.recommendations);
+}
+
+
+function showResults(list){
+    document.getElementById("results").classList.remove("hidden");
+
+    const cards = document.getElementById("cards");
+    cards.innerHTML = "";
+
+    const colors = ["bg-green-500","bg-blue-500","bg-purple-500"];
+
+    list.forEach((item,i)=>{
+        cards.innerHTML += `
+        <div class="glass p-6 rounded-2xl text-center transform transition hover:scale-105">
+            <h3 class="text-xl font-bold mb-2">${item.career.replaceAll("_"," ")}</h3>
+            <p class="text-4xl font-extrabold ${colors[i%colors.length]}">
+                ${(item.confidence*100).toFixed(1)}%
+            </p>
+            <p class="text-gray-300 mt-2">Confidence Score</p>
+        </div>`;
+    });
+}
+</script>
+
+</body>
+</html>

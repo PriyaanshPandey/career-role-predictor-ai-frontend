@@ -3,146 +3,296 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Career Predictor</title>
+<title>Disha AI</title>
 
-
-
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
 <style>
-body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+:root{
+--accent:#9aa6ff;
+--accent2:#e3e7ff;
+--bg:#050507;
 }
-.glass {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease-in-out;
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:white;font-family:Inter;overflow-x:hidden}
+
+canvas{position:fixed;inset:0;z-index:0}
+body>*:not(canvas){position:relative;z-index:2}
+
+/* HEADER */
+header{
+padding:20px 50px;
+border-bottom:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+background:rgba(5,5,7,.35);
+font-family:Sora;
 }
-.glass:hover {
-    transform: scale(1.03);
-    box-shadow: 0 20px 40px rgba(0,255,0,0.2);
+
+/* HERO */
+.hero{text-align:center;margin-top:80px}
+.hero h2{font-size:52px;font-family:Sora}
+
+/* CARD */
+.card{
+max-width:1100px;margin:70px auto;padding:50px;border-radius:26px;
+background:rgba(8,10,18,.38);
+backdrop-filter:blur(16px) saturate(140%);
+border:1px solid rgba(255,255,255,.14);
+box-shadow:0 40px 120px rgba(0,0,0,.75);
 }
-.slider::-webkit-slider-thumb {
-    appearance:none;
-    width:22px;
-    height:22px;
-    background:#22c55e;
-    border-radius:50%;
-    cursor:pointer;
-    border: 2px solid white;
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+
+/* SLIDERS */
+label{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
+.val{font-family:"JetBrains Mono"}
+
+.slider{appearance:none;width:100%;height:6px;background:rgba(255,255,255,.18);border-radius:999px}
+.slider::-webkit-slider-thumb{
+appearance:none;height:18px;width:18px;border-radius:50%;
+background:#fff;border:3px solid var(--accent);
+box-shadow:0 0 18px var(--accent);cursor:pointer;
 }
-.slider::-moz-range-thumb {
-    width:22px;
-    height:22px;
-    background:#22c55e;
-    border-radius:50%;
-    cursor:pointer;
-    border: 2px solid white;
+
+/* ===== SUPER CTA BUTTON ===== */
+.cta{
+display:block;margin:60px auto 0;
+padding:20px 90px;
+font-size:18px;
+font-weight:600;
+border-radius:18px;
+border:none;
+color:white;
+cursor:pointer;
+position:relative;
+background:linear-gradient(90deg,#1a2360,#0e1335,#1a2360);
+background-size:200% 100%;
+animation:flow 6s linear infinite;
+box-shadow:0 0 0 rgba(154,166,255,0);
+transition:.25s;
 }
+
+@keyframes flow{
+0%{background-position:0%}
+100%{background-position:200%}
+}
+
+.cta:hover{
+transform:translateY(-3px);
+box-shadow:0 0 35px rgba(154,166,255,.6);
+}
+
+.cta:active{
+transform:scale(.97);
+box-shadow:0 0 70px rgba(154,166,255,.9);
+}
+
+.cta.loading{
+pointer-events:none;
+animation:scan 1.5s linear infinite;
+}
+
+@keyframes scan{
+0%{background-position:-200%}
+100%{background-position:200%}
+}
+
+.results{max-width:1000px;margin:70px auto;display:none}
+.cardR{
+padding:28px;border-radius:18px;background:rgba(10,14,30,.5);
+border:1px solid rgba(255,255,255,.12);margin-bottom:18px;
+}
+.bar{height:8px;background:#141938;border-radius:999px;overflow:hidden;margin-top:8px}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 </style>
 </head>
 
-<body class="text-white min-h-screen flex items-center justify-center p-6">
+<body>
 
-<div class="max-w-5xl w-full">
+<canvas id="bg"></canvas>
 
-<h1 class="text-4xl md:text-5xl font-bold text-center mb-2">🎯 AI Career Predictor</h1>
-<p class="text-center text-gray-400 mb-8">
-Give yourself points (0–5) for each trait to see your best career match
-</p>
+<header>Disha AI</header>
 
-<div class="glass rounded-3xl p-8 shadow-2xl">
+<section class="hero">
+<h2>Discover Ideal Career Path</h2>
+</section>
 
-<div id="sliders" class="grid md:grid-cols-2 gap-6"></div>
-
-<div class="text-center mt-8">
-<button onclick="predictCareer()"
-class="bg-green-500 hover:bg-green-400 transition px-8 py-3 rounded-xl text-lg font-semibold shadow-lg">
-Predict My Career 🚀
-</button>
+<div class="card">
+<h3 style="margin-bottom:30px;font-family:Sora">Self Assessment</h3>
+<div id="sliders" class="grid"></div>
+<button id="analyze" class="cta">Analyze Profile</button>
 </div>
 
-</div>
-
-<div id="results" class="mt-10 hidden">
-<h2 class="text-2xl font-semibold text-center mb-6">🏆 Your Top Career Matches</h2>
-<div id="cards" class="grid md:grid-cols-3 gap-6"></div>
-</div>
-
-</div>
+<div id="results" class="results"></div>
 
 <script>
-const API = "https://career-role-predictor-ai.onrender.com/predict";
+/* ================= PARTICLES FIXED ================= */
 
-const traits = [
-"logic","math","creativity","coding","communication",
-"patience","curiosity","attention","risk_taking","visualization"
-];
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+let W,H;
 
-const slidersDiv = document.getElementById("sliders");
+function resize(){
+W=canvas.width=innerWidth;
+H=canvas.height=innerHeight;
+}
+resize();
+addEventListener("resize",resize);
+
+let mouse={x:W/2,y:H/2};
+addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+
+let MODE="idle";
+
+class Particle{
+constructor(){
+this.x=Math.random()*W;
+this.y=Math.random()*H;
+this.vx=(Math.random()-.5)*.6;
+this.vy=(Math.random()-.5)*.6;
+this.tx=null;this.ty=null;
+this.size=2;
+}
+
+update(){
+
+if(MODE==="text" && this.tx){
+this.x+=(this.tx-this.x)*.12;
+this.y+=(this.ty-this.y)*.12;
+this.size=3.2;
+return;
+}
+
+this.size=2;
+
+let dx=this.x-mouse.x,dy=this.y-mouse.y,dist=Math.hypot(dx,dy);
+if(dist<120){this.x+=dx/dist*2;this.y+=dy/dist*2;}
+
+this.x+=this.vx;
+this.y+=this.vy;
+
+if(this.x<0||this.x>W)this.vx*=-1;
+if(this.y<0||this.y>H)this.vy*=-1;
+}
+
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,6.28);
+ctx.fillStyle=MODE==="text"?"#ffffff":"rgba(220,225,255,.8)";
+ctx.fill();
+}
+}
+
+let particles=[];
+for(let i=0;i<(innerWidth<700?300:800);i++)particles.push(new Particle());
+
+function animate(){
+ctx.fillStyle="rgba(5,5,7,.18)";
+ctx.fillRect(0,0,W,H);
+particles.forEach(p=>{p.update();p.draw();});
+requestAnimationFrame(animate);
+}
+animate();
+
+/* TEXT FORMATION FIXED */
+function formText(text){
+MODE="text";
+
+const off=document.createElement("canvas");
+const octx=off.getContext("2d");
+off.width=W;off.height=H;
+
+/* adaptive font sizing so long roles fit */
+let size=Math.min(W/(text.length*0.55),190);
+octx.font="700 "+size+"px Sora";
+octx.textAlign="center";
+octx.fillStyle="#fff";
+octx.fillText(text,W/2,H/2+size/3);
+
+let data=octx.getImageData(0,0,W,H).data;
+let pts=[];
+
+/* denser sampling */
+for(let y=0;y<H;y+=2){
+for(let x=0;x<W;x+=2){
+if(data[(y*W+x)*4+3]>120) pts.push({x,y});
+}
+}
+
+/* ==== KEY FIX: distribute particles across points ==== */
+for(let i=0;i<particles.length;i++){
+
+let index=Math.floor(i * pts.length / particles.length);
+
+if(pts[index]){
+particles[i].tx=pts[index].x;
+particles[i].ty=pts[index].y;
+}else{
+particles[i].tx=null;
+particles[i].ty=null;
+}
+
+}
+
+/* hold readable longer */
+setTimeout(()=>{
+MODE="idle";
+particles.forEach(p=>{p.tx=null;p.ty=null});
+},5000);
+}
 
 
+/* SLIDERS */
+const traits=["logic","math","creativity","coding","communication","patience","curiosity","attention","risk_taking","visualization"];
+const sliders=document.getElementById("sliders");
 
-
-traits.forEach(t => {
-    slidersDiv.innerHTML += `
-    <div>
-        <div class="flex justify-between mb-1">
-            <label class="capitalize font-medium">${t.replace("_"," ")}</label>
-            <span id="${t}_val">2</span>
-        </div>
-        <input type="range" min="0" max="5" value="2"
-            class="w-full slider"
-            oninput="updateVal('${t}', this.value)"
-            id="${t}">
-    </div>`;
+traits.forEach(t=>{
+sliders.innerHTML+=`
+<div>
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<label>${t}</label>
+<span id="${t}_val" class="val">3</span>
+</div>
+<input type="range" min="0" max="5" value="3" class="slider" id="${t}" oninput="${t}_val.innerText=this.value">
+</div>`;
 });
 
+/* API */
+const btn=document.getElementById("analyze");
+const API="https://career-role-predictor-ai.onrender.com/predict";
 
+btn.onclick=async()=>{
+btn.classList.add("loading");
 
+let data={};traits.forEach(t=>data[t]=Number(document.getElementById(t).value));
 
-
-function updateVal(id,val){
-    document.getElementById(id+"_val").innerText = val;
+try{
+const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+const result=await res.json();
+showResults(result.recommendations);
+formText(result.recommendations[0].career.replaceAll("_"," "));
+}catch{
+alert("Server busy — try again");
 }
 
+btn.classList.remove("loading");
+};
 
-async function predictCareer(){
-    let data = {};
-    traits.forEach(t=>{
-        data[t] = Number(document.getElementById(t).value);
-    });
-
-    const res = await fetch(API,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(data)
-    });
-
-    const result = await res.json();
-    showResults(result.recommendations);
-}
-
-
+/* RESULTS */
 function showResults(list){
-    document.getElementById("results").classList.remove("hidden");
+const r=document.getElementById("results");
+r.style.display="block";
+r.innerHTML="<h2 style='text-align:center;margin-bottom:30px;font-family:Sora'>Recommended Careers</h2>";
 
-    const cards = document.getElementById("cards");
-    cards.innerHTML = "";
-
-    const colors = ["bg-green-500","bg-blue-500","bg-purple-500"];
-
-    list.forEach((item,i)=>{
-        cards.innerHTML += `
-        <div class="glass p-6 rounded-2xl text-center transform transition hover:scale-105">
-            <h3 class="text-xl font-bold mb-2">${item.career.replaceAll("_"," ")}</h3>
-            <p class="text-4xl font-extrabold ${colors[i%colors.length]}">
-                ${(item.confidence*100).toFixed(1)}%
-            </p>
-            <p class="text-gray-300 mt-2">Confidence Score</p>
-        </div>`;
-    });
+list.forEach(c=>{
+r.innerHTML+=`
+<div class="cardR">
+<h3>${c.career.replaceAll("_"," ")}</h3>
+<div class="bar"><div class="fill" style="width:${c.confidence*100}%"></div></div>
+<p style="margin-top:6px">${(c.confidence*100).toFixed(1)}%</p>
+</div>`;
+});
 }
 </script>
 

@@ -105,6 +105,171 @@ border:1px solid rgba(255,255,255,.12);margin-bottom:18px;
 }
 .bar{height:8px;background:#141938;border-radius:999px;overflow:hidden;margin-top:8px}
 .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+/* ===== PREMIUM RESULT CARDS ===== */
+/* ================= PREMIUM CAREER CARDS ================= */
+
+#cards{
+gap:34px;
+}
+
+/* CARD SURFACE */
+.career-card{
+position:relative;
+padding:32px;
+border-radius:20px;
+
+/* much more solid */
+background:
+linear-gradient(180deg, rgba(18,20,38,.88), rgba(12,14,28,.92));
+
+border:1px solid rgba(255,255,255,.14);
+
+/* layered depth */
+box-shadow:
+0 25px 70px rgba(0,0,0,.65),
+inset 0 1px 0 rgba(255,255,255,.06);
+
+backdrop-filter:blur(6px);
+transition:all .35s cubic-bezier(.2,.8,.2,1);
+overflow:hidden;
+}
+
+/* subtle color aura */
+.career-card::before{
+content:"";
+position:absolute;
+inset:0;
+opacity:.18;
+background:radial-gradient(circle at 20% 10%,#7c8cff,transparent 60%);
+pointer-events:none;
+}
+
+/* hover interaction */
+.career-card:hover{
+transform:translateY(-6px);
+border-color:rgba(140,160,255,.35);
+box-shadow:
+0 40px 120px rgba(0,0,0,.8),
+0 0 40px rgba(90,110,255,.18);
+}
+
+/* header */
+.career-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.career-title{
+font-size:1.35rem;
+font-weight:600;
+letter-spacing:.03em;
+text-transform:capitalize;
+}
+
+.career-percent{
+font-family:"JetBrains Mono",monospace;
+font-size:1.15rem;
+opacity:.95;
+}
+
+/* progress bar track */
+.career-bar{
+height:9px;
+background:rgba(255,255,255,.08);
+border-radius:999px;
+overflow:hidden;
+}
+
+/* animated fill */
+.career-fill{
+height:100%;
+width:0%;
+border-radius:999px;
+background:linear-gradient(90deg,#9aa8ff,#cfd6ff);
+animation:fillBar 1.6s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes fillBar{
+to{width:var(--target);}
+}
+
+/* roadmap button */
+.career-bottom{
+margin-top:26px;
+text-align:center;
+}
+
+.roadmap-btn{
+padding:12px 28px;
+border-radius:12px;
+
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.18);
+
+font-weight:600;
+letter-spacing:.05em;
+color:white;
+
+transition:.25s;
+}
+
+.roadmap-btn:hover{
+background:rgba(140,160,255,.18);
+border-color:rgba(140,160,255,.5);
+transform:translateY(-2px);
+}
+
+
+/* ===== VIDEO MODAL ===== */
+
+.videoModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(12px);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:50;
+}
+
+.videoBox{
+width:min(1000px,92%);
+background:#080b18;
+border-radius:18px;
+padding:18px;
+box-shadow:0 40px 120px rgba(0,0,0,.8);
+animation:pop .25s ease;
+}
+
+@keyframes pop{
+from{transform:scale(.85);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+
+.videoHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.closeBtn{
+cursor:pointer;
+font-size:20px;
+opacity:.7;
+}
+
+.videoBox iframe{
+width:100%;
+height:520px;
+border-radius:12px;
+}
+
+
 </style>
 </head>
 
@@ -279,22 +444,103 @@ alert("Server busy — try again");
 btn.classList.remove("loading");
 };
 
+
+const ROADMAPS = {
+  backend_developer: "https://youtu.be/OeEHJgzqS1k?si=biDgfSJpfFnK42cm",
+  frontend_developer: "https://youtu.be/DbRXv5TXMEE?si=u0uQtwDMZ-0leFXJ",
+  data_scientist: "https://youtu.be/9R3X0JoCLyU?si=8HepnIcDjVTzy6ck",
+  ui_ux_designer: "https://youtu.be/2OlT0n6JlUg?si=t-Eis8cZotag064Y",
+  ai_engineer: "https://youtu.be/t9MJ1gxcJ4w?si=TgUCZP2tiNzAXK-D",
+  cyber_security: "https://youtu.be/vK4Mno4QYqk?si=0DFecfFpaxb8SrB0",
+  product_manager: "https://youtu.be/J8VBh3JhNDY?si=oRCV4f-hG6XcB_ca"
+};
+
 /* RESULTS */
 function showResults(list){
-const r=document.getElementById("results");
-r.style.display="block";
-r.innerHTML="<h2 style='text-align:center;margin-bottom:30px;font-family:Sora'>Recommended Careers</h2>";
 
-list.forEach(c=>{
-r.innerHTML+=`
-<div class="cardR">
-<h3>${c.career.replaceAll("_"," ")}</h3>
-<div class="bar"><div class="fill" style="width:${c.confidence*100}%"></div></div>
-<p style="margin-top:6px">${(c.confidence*100).toFixed(1)}%</p>
-</div>`;
+document.getElementById("loading").classList.add("hidden");
+document.getElementById("results").classList.remove("hidden");
+
+const cards=document.getElementById("cards");
+cards.innerHTML="";
+
+list.forEach((item)=>{
+
+const percent=(item.confidence*100).toFixed(1);
+
+cards.innerHTML+=`
+<div class="career-card">
+
+    <div class="career-top">
+        <div class="career-title">
+            ${item.career.replaceAll("_"," ")}
+        </div>
+        <div class="career-percent">${percent}%</div>
+    </div>
+
+    <div class="career-bar">
+        <div class="career-fill" style="--target:${percent}%"></div>
+    </div>
+
+    <div class="career-bottom">
+        <button class="roadmap-btn"
+        onclick="openVideo(roadmapLinks['${item.career}'],'${item.career.replaceAll("_"," ")}')">
+        View Roadmap
+        </button>
+    </div>
+
+</div>
+`;
 });
 }
-</script>
 
+function openVideo(link,title){
+
+if(!link){
+alert("Roadmap not added yet");
+return;
+}
+
+/* convert youtube links automatically */
+let videoID="";
+
+if(link.includes("watch?v=")){
+videoID = link.split("watch?v=")[1].split("&")[0];
+}
+else if(link.includes("youtu.be/")){
+videoID = link.split("youtu.be/")[1].split("?")[0];
+}
+else if(link.includes("embed/")){
+videoID = link.split("embed/")[1];
+}
+
+const embed = "https://www.youtube.com/embed/"+videoID+"?autoplay=1&rel=0";
+
+document.getElementById("videoTitle").innerText=title+" Roadmap";
+document.getElementById("videoFrame").src=embed;
+document.getElementById("videoModal").style.display="flex";
+}
+
+
+function closeVideo(){
+document.getElementById("videoFrame").src="";
+document.getElementById("videoModal").style.display="none";
+}
+
+</script>
+<div id="videoModal" class="videoModal">
+  <div class="videoBox">
+    <div class="videoHeader">
+      <h3 id="videoTitle"></h3>
+      <span onclick="closeVideo()" class="closeBtn">✕</span>
+    </div>
+    <iframe id="videoFrame"
+      src=""
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
 </body>
 </html>

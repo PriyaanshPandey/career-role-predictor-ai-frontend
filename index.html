@@ -13,10 +13,8 @@
 --accent2:#e3e7ff;
 --bg:#050507;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:white;font-family:Inter;overflow-x:hidden}
-
 canvas{position:fixed;inset:0;z-index:0}
 body>*:not(canvas){position:relative;z-index:2}
 
@@ -99,6 +97,7 @@ animation:scan 1.5s linear infinite;
 }
 
 .results{max-width:1000px;margin:70px auto;display:none}
+#cards{display:grid;gap:34px;}
 .cardR{
 padding:28px;border-radius:18px;background:rgba(10,14,30,.5);
 border:1px solid rgba(255,255,255,.12);margin-bottom:18px;
@@ -106,125 +105,105 @@ border:1px solid rgba(255,255,255,.12);margin-bottom:18px;
 .bar{height:8px;background:#141938;border-radius:999px;overflow:hidden;margin-top:8px}
 .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 
-/* ===== PREMIUM RESULT CARDS ===== */
-/* ================= PREMIUM CAREER CARDS ================= */
-
-#cards{
-gap:34px;
-}
-
-/* CARD SURFACE */
+/* CAREER CARDS - PREMIUM BLACK & WHITE THEME */
 .career-card{
-position:relative;
-padding:32px;
-border-radius:20px;
-
-/* much more solid */
-background:
-linear-gradient(180deg, rgba(18,20,38,.88), rgba(12,14,28,.92));
-
-border:1px solid rgba(255,255,255,.14);
-
-/* layered depth */
-box-shadow:
-0 25px 70px rgba(0,0,0,.65),
-inset 0 1px 0 rgba(255,255,255,.06);
-
-backdrop-filter:blur(6px);
-transition:all .35s cubic-bezier(.2,.8,.2,1);
-overflow:hidden;
+  position:relative;
+  padding:32px;
+  border-radius:24px;
+  background:rgba(10,10,10,0.85); /* slightly transparent dark */
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px) saturate(150%);
+  transition:all 0.35s cubic-bezier(.2,.8,.2,1);
+  overflow:hidden;
+  color:white;
 }
 
-/* subtle color aura */
 .career-card::before{
-content:"";
-position:absolute;
-inset:0;
-opacity:.18;
-background:radial-gradient(circle at 20% 10%,#7c8cff,transparent 60%);
-pointer-events:none;
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:0.08; /* subtle glow */
+  background:radial-gradient(circle at 20% 10%, #fff, transparent 70%);
+  pointer-events:none;
+  border-radius:24px;
 }
 
-/* hover interaction */
 .career-card:hover{
-transform:translateY(-6px);
-border-color:rgba(140,160,255,.35);
-box-shadow:
-0 40px 120px rgba(0,0,0,.8),
-0 0 40px rgba(90,110,255,.18);
+  transform:translateY(-6px);
+  border-color:rgba(255,255,255,0.35);
+  box-shadow:
+    0 45px 120px rgba(0,0,0,0.75),
+    0 0 50px rgba(255,255,255,0.1);
 }
 
-/* header */
 .career-top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
 }
 
 .career-title{
-font-size:1.35rem;
-font-weight:600;
-letter-spacing:.03em;
-text-transform:capitalize;
+  font-size:1.35rem;
+  font-weight:600;
+  letter-spacing:.03em;
+  text-transform:capitalize;
 }
 
 .career-percent{
-font-family:"JetBrains Mono",monospace;
-font-size:1.15rem;
-opacity:.95;
+  font-family:"JetBrains Mono", monospace;
+  font-size:1.15rem;
+  opacity:.9;
 }
 
-/* progress bar track */
 .career-bar{
-height:9px;
-background:rgba(255,255,255,.08);
-border-radius:999px;
-overflow:hidden;
+  height:10px;
+  background:rgba(255,255,255,0.05); /* slightly darker for contrast */
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:10px;
 }
 
-/* animated fill */
-.career-fill{
-height:100%;
-width:0%;
-border-radius:999px;
-background:linear-gradient(90deg,#9aa8ff,#cfd6ff);
-animation:fillBar 1.6s cubic-bezier(.2,.8,.2,1) forwards;
+
+.career-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff 0%, #aaa 100%);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  transition: width 1.5s cubic-bezier(.2,.8,.2,1); /* smooth animation */
 }
 
-@keyframes fillBar{
-to{width:var(--target);}
-}
 
-/* roadmap button */
+
 .career-bottom{
-margin-top:26px;
-text-align:center;
+  margin-top:28px;
+  text-align:center;
 }
 
 .roadmap-btn{
-padding:12px 28px;
-border-radius:12px;
-
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.18);
-
-font-weight:600;
-letter-spacing:.05em;
-color:white;
-
-transition:.25s;
+  padding:14px 32px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  font-weight:600;
+  letter-spacing:.05em;
+  color:white;
+  transition:.3s;
 }
 
 .roadmap-btn:hover{
-background:rgba(140,160,255,.18);
-border-color:rgba(140,160,255,.5);
-transform:translateY(-2px);
+  background:rgba(255,255,255,0.18);
+  border-color:rgba(255,255,255,0.4);
+  transform:translateY(-2px);
 }
 
 
-/* ===== VIDEO MODAL ===== */
 
+/* VIDEO MODAL */
 .videoModal{
 position:fixed;
 inset:0;
@@ -268,15 +247,11 @@ width:100%;
 height:520px;
 border-radius:12px;
 }
-
-
 </style>
 </head>
 
 <body>
-
 <canvas id="bg"></canvas>
-
 <header>Disha AI</header>
 
 <section class="hero">
@@ -289,129 +264,77 @@ border-radius:12px;
 <button id="analyze" class="cta">Analyze Profile</button>
 </div>
 
-<div id="results" class="results"></div>
+<div id="results" class="results">
+  <div id="cards"></div>
+</div>
+
+<div id="videoModal" class="videoModal">
+  <div class="videoBox">
+    <div class="videoHeader">
+      <h3 id="videoTitle"></h3>
+      <span onclick="closeVideo()" class="closeBtn">✕</span>
+    </div>
+    <iframe id="videoFrame"
+      src=""
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
 
 <script>
-/* ================= PARTICLES FIXED ================= */
-
+/* PARTICLES */
 const canvas=document.getElementById("bg");
 const ctx=canvas.getContext("2d");
 let W,H;
-
-function resize(){
-W=canvas.width=innerWidth;
-H=canvas.height=innerHeight;
-}
-resize();
-addEventListener("resize",resize);
-
-let mouse={x:W/2,y:H/2};
-addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY});
-
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+resize();addEventListener("resize",resize);
+let mouse={x:W/2,y:H/2};addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY});
 let MODE="idle";
 
 class Particle{
-constructor(){
-this.x=Math.random()*W;
-this.y=Math.random()*H;
-this.vx=(Math.random()-.5)*.6;
-this.vy=(Math.random()-.5)*.6;
-this.tx=null;this.ty=null;
-this.size=2;
-}
-
+constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.6;this.vy=(Math.random()-.5)*.6;this.tx=null;this.ty=null;this.size=2;}
 update(){
-
-if(MODE==="text" && this.tx){
-this.x+=(this.tx-this.x)*.12;
-this.y+=(this.ty-this.y)*.12;
-this.size=3.2;
-return;
-}
-
+if(MODE==="text" && this.tx){this.x+=(this.tx-this.x)*.12;this.y+=(this.ty-this.y)*.12;this.size=3.2;return;}
 this.size=2;
-
 let dx=this.x-mouse.x,dy=this.y-mouse.y,dist=Math.hypot(dx,dy);
 if(dist<120){this.x+=dx/dist*2;this.y+=dy/dist*2;}
-
-this.x+=this.vx;
-this.y+=this.vy;
-
+this.x+=this.vx;this.y+=this.vy;
 if(this.x<0||this.x>W)this.vx*=-1;
 if(this.y<0||this.y>H)this.vy*=-1;
 }
-
-draw(){
-ctx.beginPath();
-ctx.arc(this.x,this.y,this.size,0,6.28);
-ctx.fillStyle=MODE==="text"?"#ffffff":"rgba(220,225,255,.8)";
-ctx.fill();
-}
+draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,6.28);ctx.fillStyle=MODE==="text"?"#ffffff":"rgba(220,225,255,.8)";ctx.fill();}
 }
 
-let particles=[];
-for(let i=0;i<(innerWidth<700?300:800);i++)particles.push(new Particle());
-
-function animate(){
-ctx.fillStyle="rgba(5,5,7,.18)";
-ctx.fillRect(0,0,W,H);
-particles.forEach(p=>{p.update();p.draw();});
-requestAnimationFrame(animate);
-}
+let particles=[];for(let i=0;i<(innerWidth<700?300:800);i++)particles.push(new Particle());
+function animate(){ctx.fillStyle="rgba(5,5,7,.18)";ctx.fillRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
 animate();
 
-/* TEXT FORMATION FIXED */
 function formText(text){
 MODE="text";
-
 const off=document.createElement("canvas");
 const octx=off.getContext("2d");
 off.width=W;off.height=H;
-
-/* adaptive font sizing so long roles fit */
 let size=Math.min(W/(text.length*0.55),190);
 octx.font="700 "+size+"px Sora";
 octx.textAlign="center";
 octx.fillStyle="#fff";
 octx.fillText(text,W/2,H/2+size/3);
-
 let data=octx.getImageData(0,0,W,H).data;
 let pts=[];
-
-/* denser sampling */
-for(let y=0;y<H;y+=2){
-for(let x=0;x<W;x+=2){
-if(data[(y*W+x)*4+3]>120) pts.push({x,y});
-}
-}
-
-/* ==== KEY FIX: distribute particles across points ==== */
+for(let y=0;y<H;y+=2){for(let x=0;x<W;x+=2){if(data[(y*W+x)*4+3]>120) pts.push({x,y});}}
 for(let i=0;i<particles.length;i++){
-
 let index=Math.floor(i * pts.length / particles.length);
-
-if(pts[index]){
-particles[i].tx=pts[index].x;
-particles[i].ty=pts[index].y;
-}else{
-particles[i].tx=null;
-particles[i].ty=null;
+if(pts[index]){particles[i].tx=pts[index].x;particles[i].ty=pts[index].y;}
+else{particles[i].tx=null;particles[i].ty=null;}
 }
-
+setTimeout(()=>{MODE="idle";particles.forEach(p=>{p.tx=null;p.ty=null});},5000);
 }
-
-/* hold readable longer */
-setTimeout(()=>{
-MODE="idle";
-particles.forEach(p=>{p.tx=null;p.ty=null});
-},5000);
-}
-
 
 /* SLIDERS */
 const traits=["logic","math","creativity","coding","communication","patience","curiosity","attention","risk_taking","visualization"];
 const sliders=document.getElementById("sliders");
-
 traits.forEach(t=>{
 sliders.innerHTML+=`
 <div>
@@ -427,120 +350,97 @@ sliders.innerHTML+=`
 const btn=document.getElementById("analyze");
 const API="https://career-role-predictor-ai.onrender.com/predict";
 
+const roadmapLinks = {
+  Backend_Developer: "https://youtu.be/OeEHJgzqS1k?si=biDgfSJpfFnK42cm",
+  Frontend_Developer: "https://youtu.be/DbRXv5TXMEE?si=u0uQtwDMZ-0leFXJ",
+  Data_Scientist: "https://youtu.be/9R3X0JoCLyU?si=8HepnIcDjVTzy6ck",
+  Ui_Ux_Designer: "https://youtu.be/2OlT0n6JlUg?si=t-Eis8cZotag064Y",
+  Ai_Engineer: "https://youtu.be/t9MJ1gxcJ4w?si=TgUCZP2tiNzAXK-D",
+  Cyber_Security: "https://youtu.be/vK4Mno4QYqk?si=0DFecfFpaxb8SrB0",
+  Product_Manager: "https://youtu.be/J8VBh3JhNDY?si=oRCV4f-hG6XcB_ca",
+  Ml_Engineer:"https://youtu.be/7IgVGSaQPaw?si=3iFrAGXJb7PMebwp",
+  DevOps_Engineer: "https://youtu.be/6GQRb4fGvtk?si=nZgzee1WCTkar8FD",
+  Game_Developer: "https://youtu.be/MjHalxr_tDw?si=MP_i_RAeUwmJfE3W"
+};
+
+async function fetchWithRetry(url, options, retries=8, delay=7000){
+for(let i=0;i<retries;i++){
+try{
+const res = await fetch(url,options);
+if(res.ok) return res;
+}catch(e){}
+console.log("Retrying server wakeup...");
+await new Promise(r=>setTimeout(r,delay));
+}
+throw new Error("Server did not wake");
+}
+
 btn.onclick=async()=>{
 btn.classList.add("loading");
-
 let data={};traits.forEach(t=>data[t]=Number(document.getElementById(t).value));
-
 try{
-const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-const result=await res.json();
+const res = await fetchWithRetry(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+},8,7000);
+
+const result = await res.json();
 showResults(result.recommendations);
 formText(result.recommendations[0].career.replaceAll("_"," "));
 }catch{
-alert("Server busy — try again");
+alert("Server busy — try again after 40-60 seconds");
 }
-
 btn.classList.remove("loading");
-};
-
-
-const ROADMAPS = {
-  backend_developer: "https://youtu.be/OeEHJgzqS1k?si=biDgfSJpfFnK42cm",
-  frontend_developer: "https://youtu.be/DbRXv5TXMEE?si=u0uQtwDMZ-0leFXJ",
-  data_scientist: "https://youtu.be/9R3X0JoCLyU?si=8HepnIcDjVTzy6ck",
-  ui_ux_designer: "https://youtu.be/2OlT0n6JlUg?si=t-Eis8cZotag064Y",
-  ai_engineer: "https://youtu.be/t9MJ1gxcJ4w?si=TgUCZP2tiNzAXK-D",
-  cyber_security: "https://youtu.be/vK4Mno4QYqk?si=0DFecfFpaxb8SrB0",
-  product_manager: "https://youtu.be/J8VBh3JhNDY?si=oRCV4f-hG6XcB_ca"
 };
 
 /* RESULTS */
 function showResults(list){
+  const results = document.getElementById("results");
+  results.style.display = "block";
+  const cards = document.getElementById("cards");
+  cards.innerHTML = "";
 
-document.getElementById("loading").classList.add("hidden");
-document.getElementById("results").classList.remove("hidden");
+  list.forEach((item) => {
+    const percent = (item.confidence * 100).toFixed(1);
 
-const cards=document.getElementById("cards");
-cards.innerHTML="";
-
-list.forEach((item)=>{
-
-const percent=(item.confidence*100).toFixed(1);
-
-cards.innerHTML+=`
-<div class="career-card">
-
-    <div class="career-top">
-        <div class="career-title">
-            ${item.career.replaceAll("_"," ")}
-        </div>
+    const card = document.createElement("div");
+    card.className = "career-card";
+    card.innerHTML = `
+      <div class="career-top">
+        <div class="career-title">${item.career.replaceAll("_"," ")}</div>
         <div class="career-percent">${percent}%</div>
-    </div>
+      </div>
+      <div class="career-bar">
+        <div class="career-fill"></div>
+      </div>
+      <div class="career-bottom">
+        <button class="roadmap-btn" onclick="openVideo(roadmapLinks['${item.career}'],'${item.career.replaceAll("_"," ")}')">View Roadmap</button>
+      </div>
+    `;
+    cards.appendChild(card);
 
-    <div class="career-bar">
-        <div class="career-fill" style="--target:${percent}%"></div>
-    </div>
-
-    <div class="career-bottom">
-        <button class="roadmap-btn"
-        onclick="openVideo(roadmapLinks['${item.career}'],'${item.career.replaceAll("_"," ")}')">
-        View Roadmap
-        </button>
-    </div>
-
-</div>
-`;
-});
+    // Animate the fill bar after a tiny delay
+    const fill = card.querySelector(".career-fill");
+    setTimeout(() => {
+      fill.style.width = `${percent}%`;
+    }, 50); // small delay ensures transition works
+  });
 }
 
+/* VIDEO */
 function openVideo(link,title){
-
-if(!link){
-alert("Roadmap not added yet");
-return;
-}
-
-/* convert youtube links automatically */
+if(!link){alert("Roadmap not added yet");return;}
 let videoID="";
-
-if(link.includes("watch?v=")){
-videoID = link.split("watch?v=")[1].split("&")[0];
-}
-else if(link.includes("youtu.be/")){
-videoID = link.split("youtu.be/")[1].split("?")[0];
-}
-else if(link.includes("embed/")){
-videoID = link.split("embed/")[1];
-}
-
+if(link.includes("watch?v=")){videoID = link.split("watch?v=")[1].split("&")[0];}
+else if(link.includes("youtu.be/")){videoID = link.split("youtu.be/")[1].split("?")[0];}
+else if(link.includes("embed/")){videoID = link.split("embed/")[1];}
 const embed = "https://www.youtube.com/embed/"+videoID+"?autoplay=1&rel=0";
-
 document.getElementById("videoTitle").innerText=title+" Roadmap";
 document.getElementById("videoFrame").src=embed;
 document.getElementById("videoModal").style.display="flex";
 }
-
-
-function closeVideo(){
-document.getElementById("videoFrame").src="";
-document.getElementById("videoModal").style.display="none";
-}
-
+function closeVideo(){document.getElementById("videoFrame").src="";document.getElementById("videoModal").style.display="none";}
 </script>
-<div id="videoModal" class="videoModal">
-  <div class="videoBox">
-    <div class="videoHeader">
-      <h3 id="videoTitle"></h3>
-      <span onclick="closeVideo()" class="closeBtn">✕</span>
-    </div>
-    <iframe id="videoFrame"
-      src=""
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
 </body>
 </html>
